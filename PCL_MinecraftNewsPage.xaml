@@ -1,0 +1,347 @@
+<!--
+PCL CE Minecraft 新闻主页 v2
+数据源: Minecraft Wiki (https://zh.minecraft.wiki / https://minecraft.wiki)
+格式: PCL 自定义主页片段 (无根元素, 使用 local: 前缀 PCL 内置控件)
+事件: EventType / EventData 绑定 PCL 自定义事件
+-->
+<StackPanel.Resources>
+
+    <!-- 圆角分组框样式 (仿 PCL 主页卡片) -->
+    <Style x:Key="RoundedGroupBoxStyle" TargetType="{x:Type GroupBox}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GroupBox}">
+                    <Border CornerRadius="10" BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="1.5" Background="{TemplateBinding Background}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="0" Background="{TemplateBinding BorderBrush}"
+                                CornerRadius="10,10,0,0" Padding="12,5,12,5">
+                                <ContentPresenter Content="{TemplateBinding Header}"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ContentPresenter Grid.Row="1" Margin="14" />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- 新闻标题样式 -->
+    <Style TargetType="TextBlock" x:Key="NewsTitle">
+        <Setter Property="FontSize" Value="17" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Margin" Value="0,6,0,6" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <!-- 新闻摘要样式 -->
+    <Style TargetType="TextBlock" x:Key="NewsSummary">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Margin" Value="0,0,0,10" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Foreground" Value="#FFC9D1DC" />
+    </Style>
+
+    <!-- 日期样式 -->
+    <Style TargetType="TextBlock" x:Key="NewsDate">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="#FF8B949E" />
+    </Style>
+
+    <!-- 分类角标样式 -->
+    <Style TargetType="Border" x:Key="CategoryBadge">
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="8,2,8,2" />
+        <Setter Property="Margin" Value="0,0,0,4" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+
+    <!-- 通用链接按钮 (PCL 内置按钮样式) -->
+    <Style TargetType="local:MyButton" x:Key="WikiLinkBtn">
+        <Setter Property="Margin" Value="0,8,0,0" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Padding" Value="10,0,10,0" />
+        <Setter Property="EventType" Value="打开网页" />
+    </Style>
+
+    <!-- 分类快捷按钮 -->
+    <Style TargetType="local:MyButton" x:Key="CategoryBtn">
+        <Setter Property="Margin" Value="4,4,4,4" />
+        <Setter Property="Height" Value="34" />
+        <Setter Property="Padding" Value="10,0,10,0" />
+        <Setter Property="EventType" Value="打开网页" />
+    </Style>
+
+</StackPanel.Resources>
+
+<!-- 顶部欢迎卡 -->
+<local:MyCard Title="Minecraft 新闻" Margin="0,0,0,20">
+    <Grid Margin="0,40,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <StackPanel VerticalAlignment="Center" Margin="20,8,0,0">
+            <TextBlock Text="Minecraft 新闻" FontSize="22" FontWeight="Bold"
+                Foreground="#FFFFFFFF" />
+            <TextBlock Text="数据源: Minecraft Wiki" FontSize="12" Margin="0,4,0,0"
+                Foreground="#FFB0B7C3" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center" Margin="12,0,14,0">
+            <local:MyButton Text="中文 Wiki" Height="32" Margin="0,0,6,0" Padding="10,0,10,0"
+                EventType="打开网页" EventData="https://zh.minecraft.wiki/" />
+            <local:MyButton Text="En Wiki" Height="32" Margin="0,0,6,0" Padding="10,0,10,0"
+                ColorType="Highlight" EventType="打开网页" EventData="https://minecraft.wiki/" />
+            <local:MyIconTextButton Margin="0,0,5,0" Height="32" Text="刷新"
+                EventType="刷新主页" ColorType="Highlight" />
+        </StackPanel>
+    </Grid>
+</local:MyCard>
+
+<!-- 分类速览卡 -->
+<local:MyCard Title="分类速览" CanSwap="True" Margin="0,20,0,20" IsSwaped="True">
+    <StackPanel>
+        <TextBlock Text="点击跳转 Minecraft Wiki 对应条目" FontSize="12" Margin="12,40,0,0"
+            Foreground="#FFB0B7C3" />
+        <WrapPanel Margin="12,4,12,12">
+            <local:MyButton Style="{StaticResource CategoryBtn}" Text="版本更新"
+                ColorType="Highlight" EventData="https://zh.minecraft.wiki/?search=版本更新" />
+            <local:MyButton Style="{StaticResource CategoryBtn}" Text="快照预览"
+                EventData="https://zh.minecraft.wiki/?search=快照" />
+            <local:MyButton Style="{StaticResource CategoryBtn}" Text="官方公告"
+                EventData="https://zh.minecraft.wiki/?search=官方公告" />
+            <local:MyButton Style="{StaticResource CategoryBtn}" Text="平台资讯"
+                EventData="https://zh.minecraft.wiki/?search=Switch" />
+            <local:MyButton Style="{StaticResource CategoryBtn}" Text="Wiki 动态"
+                EventData="https://zh.minecraft.wiki/?search=Wiki" />
+            <local:MyButton Style="{StaticResource CategoryBtn}" Text="Minecraft Live"
+                ColorType="Highlight" EventData="https://zh.minecraft.wiki/?search=Minecraft Live" />
+        </WrapPanel>
+    </StackPanel>
+</local:MyCard>
+
+<!-- 近期新闻卡 -->
+<local:MyCard Title="近期新闻" CanSwap="True" Margin="0,0,0,20" IsSwaped="True">
+    <StackPanel Margin="14,40,14,14">
+
+        <!-- 新闻 1: Java 26.3 Wilderness Bound -->
+        <GroupBox Margin="0,0,0,12" Style="{StaticResource RoundedGroupBoxStyle}"
+            BorderBrush="#FF3CAEEF" Padding="14">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Style="{StaticResource CategoryBadge}" Background="#FF3CAEEF">
+                        <TextBlock Text="版本更新" FontSize="11" FontWeight="Bold" Foreground="White" />
+                    </Border>
+                    <TextBlock Text="Java 26.3" Padding="8,2,0,2" FontSize="13" FontWeight="Bold"
+                        Foreground="White" VerticalAlignment="Center" />
+                </StackPanel>
+            </GroupBox.Header>
+            <StackPanel>
+                <TextBlock Text="Java 26.3「Wilderness Bound」正式版发布" Style="{StaticResource NewsTitle}" />
+                <TextBlock Text="2026-10-31" Style="{StaticResource NewsDate}" />
+                <TextBlock Style="{StaticResource NewsSummary}"
+                    Text="Minecraft Java 26.3 正式版「Wilderness Bound」已发布, 带来全新野外生存机制与生物群系更新, 详情以 Wiki 版本页面为准。" />
+                <local:MyButton Style="{StaticResource WikiLinkBtn}" Text="阅读全文"
+                    EventData="https://zh.minecraft.wiki/?search=Java版26.3" />
+            </StackPanel>
+        </GroupBox>
+
+        <!-- 新闻 2: 基岩版 26.52 -->
+        <GroupBox Margin="0,0,0,12" Style="{StaticResource RoundedGroupBoxStyle}"
+            BorderBrush="#FF3CAEEF" Padding="14">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Style="{StaticResource CategoryBadge}" Background="#FF3CAEEF">
+                        <TextBlock Text="版本更新" FontSize="11" FontWeight="Bold" Foreground="White" />
+                    </Border>
+                    <TextBlock Text="基岩版 26.52" Padding="8,2,0,2" FontSize="13" FontWeight="Bold"
+                        Foreground="White" VerticalAlignment="Center" />
+                </StackPanel>
+            </GroupBox.Header>
+            <StackPanel>
+                <TextBlock Text="基岩版 26.52 正式版发布" Style="{StaticResource NewsTitle}" />
+                <TextBlock Text="2026-10-30" Style="{StaticResource NewsDate}" />
+                <TextBlock Style="{StaticResource NewsSummary}"
+                    Text="基岩版 26.52 正式版同步上线, 修复多项稳定性问题并同步 Java 版部分特性, 详情以 Wiki 版本页面为准。" />
+                <local:MyButton Style="{StaticResource WikiLinkBtn}" Text="阅读全文"
+                    EventData="https://zh.minecraft.wiki/?search=基岩版26.52" />
+            </StackPanel>
+        </GroupBox>
+
+        <!-- 新闻 3: 26.4 Snapshot 5 -->
+        <GroupBox Margin="0,0,0,12" Style="{StaticResource RoundedGroupBoxStyle}"
+            BorderBrush="#FF8BD66F" Padding="14">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Style="{StaticResource CategoryBadge}" Background="#FF8BD66F">
+                        <TextBlock Text="快照预览" FontSize="11" FontWeight="Bold" Foreground="White" />
+                    </Border>
+                    <TextBlock Text="26.4 Snapshot 5" Padding="8,2,0,2" FontSize="13" FontWeight="Bold"
+                        Foreground="White" VerticalAlignment="Center" />
+                </StackPanel>
+            </GroupBox.Header>
+            <StackPanel>
+                <TextBlock Text="Java 26.4 快照 5 加入密冰块砖" Style="{StaticResource NewsTitle}" />
+                <TextBlock Text="2026-10-25" Style="{StaticResource NewsDate}" />
+                <TextBlock Style="{StaticResource NewsSummary}"
+                    Text="Java 26.4 第五个快照引入密冰块砖等冬季主题方块, 为下一次内容更新预热, 详情以 Wiki 版本页面为准。" />
+                <local:MyButton Style="{StaticResource WikiLinkBtn}" Text="阅读全文"
+                    EventData="https://zh.minecraft.wiki/?search=Java版26.4快照5" />
+            </StackPanel>
+        </GroupBox>
+
+        <!-- 新闻 4: 26.4 Snapshot 6 -->
+        <GroupBox Margin="0,0,0,12" Style="{StaticResource RoundedGroupBoxStyle}"
+            BorderBrush="#FF8BD66F" Padding="14">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Style="{StaticResource CategoryBadge}" Background="#FF8BD66F">
+                        <TextBlock Text="快照预览" FontSize="11" FontWeight="Bold" Foreground="White" />
+                    </Border>
+                    <TextBlock Text="26.4 Snapshot 6" Padding="8,2,0,2" FontSize="13" FontWeight="Bold"
+                        Foreground="White" VerticalAlignment="Center" />
+                </StackPanel>
+            </GroupBox.Header>
+            <StackPanel>
+                <TextBlock Text="Java 26.4 快照 6 加入雪砖" Style="{StaticResource NewsTitle}" />
+                <TextBlock Text="2026-10-29" Style="{StaticResource NewsDate}" />
+                <TextBlock Style="{StaticResource NewsSummary}"
+                    Text="Java 26.4 第六个快照继续扩充冬季主题内容, 新增雪砖与配套装饰方块, 详情以 Wiki 版本页面为准。" />
+                <local:MyButton Style="{StaticResource WikiLinkBtn}" Text="阅读全文"
+                    EventData="https://zh.minecraft.wiki/?search=Java版26.4快照6" />
+            </StackPanel>
+        </GroupBox>
+
+        <!-- 新闻 5: 基岩版 26.70 Ice Caves -->
+        <GroupBox Margin="0,0,0,12" Style="{StaticResource RoundedGroupBoxStyle}"
+            BorderBrush="#FF8BD66F" Padding="14">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Style="{StaticResource CategoryBadge}" Background="#FF8BD66F">
+                        <TextBlock Text="快照预览" FontSize="11" FontWeight="Bold" Foreground="White" />
+                    </Border>
+                    <TextBlock Text="基岩版 26.70" Padding="8,2,0,2" FontSize="13" FontWeight="Bold"
+                        Foreground="White" VerticalAlignment="Center" />
+                </StackPanel>
+            </GroupBox.Header>
+            <StackPanel>
+                <TextBlock Text="基岩版 26.70「Ice Caves」预览发布" Style="{StaticResource NewsTitle}" />
+                <TextBlock Text="2026-10-22" Style="{StaticResource NewsDate}" />
+                <TextBlock Style="{StaticResource NewsSummary}"
+                    Text="基岩版 26.70 预览版「Ice Caves」上线, 引入冰洞地貌与冬季联动内容, 详情以 Wiki 版本页面为准。" />
+                <local:MyButton Style="{StaticResource WikiLinkBtn}" Text="阅读全文"
+                    EventData="https://zh.minecraft.wiki/?search=基岩版26.70" />
+            </StackPanel>
+        </GroupBox>
+
+        <!-- 新闻 6: Minecraft Live 2026 -->
+        <GroupBox Margin="0,0,0,12" Style="{StaticResource RoundedGroupBoxStyle}"
+            BorderBrush="#FFFFD86F" Padding="14">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Style="{StaticResource CategoryBadge}" Background="#FFFFD86F">
+                        <TextBlock Text="官方公告" FontSize="11" FontWeight="Bold" Foreground="#332200" />
+                    </Border>
+                    <TextBlock Text="Minecraft Live 2026" Padding="8,2,0,2" FontSize="13" FontWeight="Bold"
+                        Foreground="White" VerticalAlignment="Center" />
+                </StackPanel>
+            </GroupBox.Header>
+            <StackPanel>
+                <TextBlock Text="Minecraft Live 2026 公布新维度「Sift 筛界」" Style="{StaticResource NewsTitle}" />
+                <TextBlock Text="2026-10-05" Style="{StaticResource NewsDate}" />
+                <TextBlock Style="{StaticResource NewsSummary}"
+                    Text="年度发布会公布全新维度「Sift 筛界」以及后续更新路线图, 详情以 Wiki 页面为准。" />
+                <local:MyButton Style="{StaticResource WikiLinkBtn}" Text="阅读全文"
+                    EventData="https://zh.minecraft.wiki/?search=Minecraft Live 2026" />
+            </StackPanel>
+        </GroupBox>
+
+        <!-- 新闻 7: Dungeons II -->
+        <GroupBox Margin="0,0,0,12" Style="{StaticResource RoundedGroupBoxStyle}"
+            BorderBrush="#FFFF6FA5" Padding="14">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Style="{StaticResource CategoryBadge}" Background="#FFFF6FA5">
+                        <TextBlock Text="平台资讯" FontSize="11" FontWeight="Bold" Foreground="White" />
+                    </Border>
+                    <TextBlock Text="Dungeons II" Padding="8,2,0,2" FontSize="13" FontWeight="Bold"
+                        Foreground="White" VerticalAlignment="Center" />
+                </StackPanel>
+            </GroupBox.Header>
+            <StackPanel>
+                <TextBlock Text="《Minecraft Dungeons II》发售, 附赠 Aurora 披风" Style="{StaticResource NewsTitle}" />
+                <TextBlock Text="2026-09-28" Style="{StaticResource NewsDate}" />
+                <TextBlock Style="{StaticResource NewsSummary}"
+                    Text="Mojang 新作《Minecraft Dungeons II》正式发售, 玩家可领取限定 Aurora 披风, 详情以 Wiki 页面为准。" />
+                <local:MyButton Style="{StaticResource WikiLinkBtn}" Text="阅读全文"
+                    EventData="https://zh.minecraft.wiki/?search=Minecraft Dungeons II" />
+            </StackPanel>
+        </GroupBox>
+
+        <!-- 新闻 8: Switch 2 版 -->
+        <GroupBox Margin="0,0,0,12" Style="{StaticResource RoundedGroupBoxStyle}"
+            BorderBrush="#FFFF6FA5" Padding="14">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Style="{StaticResource CategoryBadge}" Background="#FFFF6FA5">
+                        <TextBlock Text="平台资讯" FontSize="11" FontWeight="Bold" Foreground="White" />
+                    </Border>
+                    <TextBlock Text="Switch 2 版" Padding="8,2,0,2" FontSize="13" FontWeight="Bold"
+                        Foreground="White" VerticalAlignment="Center" />
+                </StackPanel>
+            </GroupBox.Header>
+            <StackPanel>
+                <TextBlock Text="Minecraft 登陆 Switch 2 平台" Style="{StaticResource NewsTitle}" />
+                <TextBlock Text="2026-09-15" Style="{StaticResource NewsDate}" />
+                <TextBlock Style="{StaticResource NewsSummary}"
+                    Text="Minecraft 官方支持任天堂 Switch 2, 跨平台联机与存档迁移已可用, 详情以 Wiki 页面为准。" />
+                <local:MyButton Style="{StaticResource WikiLinkBtn}" Text="阅读全文"
+                    EventData="https://zh.minecraft.wiki/?search=Switch 2" />
+            </StackPanel>
+        </GroupBox>
+
+        <!-- 新闻 9: Wiki 动态 -->
+        <GroupBox Margin="0,0,0,4" Style="{StaticResource RoundedGroupBoxStyle}"
+            BorderBrush="#FFB39DFF" Padding="14">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Style="{StaticResource CategoryBadge}" Background="#FFB39DFF">
+                        <TextBlock Text="Wiki 动态" FontSize="11" FontWeight="Bold" Foreground="White" />
+                    </Border>
+                    <TextBlock Text="Wiki 资讯" Padding="8,2,0,2" FontSize="13" FontWeight="Bold"
+                        Foreground="White" VerticalAlignment="Center" />
+                </StackPanel>
+            </GroupBox.Header>
+            <StackPanel>
+                <TextBlock Text="Minecraft Wiki 离线版同步更新" Style="{StaticResource NewsTitle}" />
+                <TextBlock Text="2026-10-01" Style="{StaticResource NewsDate}" />
+                <TextBlock Style="{StaticResource NewsSummary}"
+                    Text="Minecraft Wiki 离线版数据包更新至最新版本, 支持无网络查阅全部条目, 详情见 Wiki 官网公告。" />
+                <local:MyButton Style="{StaticResource WikiLinkBtn}" Text="阅读全文"
+                    EventData="https://zh.minecraft.wiki/?search=Wiki 离线版" />
+            </StackPanel>
+        </GroupBox>
+
+    </StackPanel>
+</local:MyCard>
+
+<!-- 页脚卡 -->
+<local:MyCard Title="关于本主页" CanSwap="True" Margin="0,0,0,20" IsSwaped="True">
+    <StackPanel Margin="14,40,14,14">
+        <TextBlock Style="{StaticResource NewsSummary}"
+            Text="新闻内容整理自 Minecraft Wiki (zh.minecraft.wiki / minecraft.wiki), 快照时间 2026-10-31。点击「阅读全文」将跳转 Wiki 搜索对应条目。" />
+        <WrapPanel>
+            <local:MyButton Style="{StaticResource WikiLinkBtn}" Text="打开中文 Wiki" ColorType="Highlight"
+                EventData="https://zh.minecraft.wiki/" />
+            <local:MyButton Style="{StaticResource WikiLinkBtn}" Text="打开英文 Wiki"
+                EventData="https://minecraft.wiki/" />
+            <local:MyButton Style="{StaticResource WikiLinkBtn}" Text="复制订阅地址"
+                EventType="复制文本" EventData="PCL_MinecraftNewsPage.xaml" ToolTip="复制本主页文件名, 便于分享" />
+        </WrapPanel>
+    </StackPanel>
+</local:MyCard>
